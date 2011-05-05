@@ -1,0 +1,18 @@
+Nagios ip_conntrack_max monitoring plugin
+
+INSTALLATION
+
+1. deploy check_ip_conntrack_max.pl to your nagios plugins dir (ex. /usr/lib64/nagios/plugins/)
+
+2. add check_ip_conntrack_max command on your nrpe.cfg
+
+  command[check_ip_conntrack_max]=/usr/lib64/nagios/plugins/check_ip_conntrack_max.pl -c 524288
+
+3. add service on your nagios config
+
+define service{
+    use                  local-service
+    host_name            s1
+    service_description  ip_conntrack_max
+    check_command        check_nrpe!check_ip_conntrack_max
+}
