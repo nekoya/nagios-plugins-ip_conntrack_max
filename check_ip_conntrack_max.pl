@@ -25,8 +25,19 @@ my $opt = sub {
 }->();
 my $expected = $opt->{correct} or usage();
 
-my $got = `cat /proc/sys/net/ipv4/ip_conntrack_max`;
-chomp $got;
+my $got = '';
+for my $proc ('ipv4/ip_conntrack_max', 'netfilter/nf_conntrack_max') {
+    my $path = '/proc/sys/net/' . $proc;
+    if (-e $path) {
+        $got = `cat $path`;
+        chomp $got;
+        last;
+    }
+}
+unless ($got) {
+    print "unknown\n";
+    exit $STATE_UNKNOWN;
+}
 
 if ($got != $expected) {
     print "got: $got, expected: $expected\n";
